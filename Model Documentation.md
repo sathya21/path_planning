@@ -8,7 +8,7 @@
 
 3) Reduce the acceleration gradually when the  car is too close to a car in front.
 
-4) Increase the acceleration gradually when the no car is in front and the speed is within the permissible speed limit. This will avoid the jerl
+4) Increase the acceleration gradually when the no car is in front and the speed is within the permissible speed limit. This will avoid the jerk
 
 
 5) Use Previous path of the car to get last two points,  if there is no previous path, then use the angle of the car and its current x,y co ordinates and create two previous points
