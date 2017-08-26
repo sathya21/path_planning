@@ -246,44 +246,112 @@ int main() {
 							}
 
 							bool too_close = false;
+							bool left_car = false;
+							bool right_car = false;
 
 							for(int i = 0; i< sensor_fusion.size();i++) {
 
 								float d = sensor_fusion[i][6];
-								cout << "d =" << d << "\n";
+								//cout << "d =" << d << "\n";
 
-								if( d < (2 +4*lane+2) && d > (2+4*lane-2))
+								if( lane!=0 && d < (2 +4*(lane-1)+2) && d > (2+4*(lane-1)-2))
 								{
-									cout << "inside" << "\n";
+									//cout << "inside left routine" << "\n";
 
 									double vx = sensor_fusion[i][3];
 									double vy = sensor_fusion[i][4];
 									double check_speed = sqrt(vx*vx + vy*vy);
 									double check_car_s = sensor_fusion[i][5];
 									check_car_s += ((double)prev_size * 0.02* check_speed);
-									cout << check_car_s << "car" << car_s<<"\n";
+									//cout << check_car_s << "car" << car_s<<"\n";
 
-									if(( check_car_s > car_s) && (check_car_s -car_s) < 30)
+									if(( check_car_s >= car_s) && (check_car_s -car_s) < 50)
+									{
+										//ref_val = 29.5;
+										left_car = true;
+										cout << "left car ======"<< "\n";
+
+									}
+									else if(( check_car_s < car_s) && (car_s - check_car_s ) < 50)
+									{
+										//ref_val = 29.5;
+										left_car = true;
+										cout << "left car behind ======" << "\n";
+
+									}
+
+								}
+								if( lane!=2 && d < (2 +4*(lane+1)+2) && d > (2+4*(lane+1)-2))
+								{
+									//cout << "inside left routine" << "\n";
+
+									double vx = sensor_fusion[i][3];
+									double vy = sensor_fusion[i][4];
+									double check_speed = sqrt(vx*vx + vy*vy);
+									double check_car_s = sensor_fusion[i][5];
+									check_car_s += ((double)prev_size * 0.02* check_speed);
+									//cout << check_car_s << "car" << car_s<<"\n";
+
+									if(( check_car_s >= car_s) && (check_car_s -car_s) < 50)
+									{
+										//ref_val = 29.5;
+										right_car = true;
+										cout << "right car ======" << "\n";
+
+									}
+									else if(( check_car_s < car_s) && (car_s - check_car_s ) < 50)
+									{
+										//ref_val = 29.5;
+										right_car = true;
+										cout << "right car behind ======" << "\n";
+
+									}
+
+								}
+
+								if( d < (2 +4*lane+2) && d > (2+4*lane-2))
+								{
+									//cout << "inside" << "\n";
+
+									double vx = sensor_fusion[i][3];
+									double vy = sensor_fusion[i][4];
+									double check_speed = sqrt(vx*vx + vy*vy);
+									double check_car_s = sensor_fusion[i][5];
+									check_car_s += ((double)prev_size * 0.02* check_speed);
+									//cout << check_car_s << "car" << car_s<<"\n";
+
+									if(( check_car_s > car_s) && (check_car_s -car_s) < 50)
 									{
 										//ref_val = 29.5;
 										too_close = true;
-										cout << "too close";
-										if( lane > 0)
-										{
-											lane = 0;
-										}
-									}
+										cout << "too close" << "\n";
 
+									}
 
 								}
 
 							}
 
+							if (left_car == false && right_car == false)
+							{
+								cout << "none" << "\n";
+							}
+							if( too_close && lane > 0 && left_car == false)
+							{
+								lane = lane-1;
+								cout << "moving to left lane" << "\n";
+							}
+							else if ( too_close &&  lane < 2 && right_car == false)
+							{
+								lane = lane+1;
+								cout << "moving to right lane" << "\n";
+
+							}
 							if( too_close )
 							{
 								ref_val -= 0.224;
 							}
-							else if (ref_val < 49.5)
+							else if (ref_val < 47.5)
 							{
 								ref_val += 0.224;
 							}
